@@ -20,7 +20,7 @@ public class MealEntity {
     private String id;
     private String name;
     private String description;
-    private Map<String, String> recipe;
+    private String recipe;
     private double rating;
     private String poster;
     private List<String> tags;

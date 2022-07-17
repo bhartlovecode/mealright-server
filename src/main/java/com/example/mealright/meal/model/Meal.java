@@ -18,7 +18,7 @@ public class Meal {
     private String id;
     private String name;
     private String description;
-    private Map<String, String> recipe;
+    private String recipe;
     private double rating;
     private String poster;
     private List<String> tags;
@@ -27,7 +27,7 @@ public class Meal {
         id = "";
         name = "";
         description = "";
-        recipe.clear();
+        recipe = "";
         rating = 0.0;
         poster = "";
         tags.clear();

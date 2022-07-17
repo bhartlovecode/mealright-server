@@ -77,7 +77,7 @@ public class MealServiceImpl implements MealService {
                 tmpMeal.setDescription(docData.get("description").toString());
                 tmpMeal.setPoster(docData.get("poster").toString());
                 tmpMeal.setRating((double)docData.get("rating"));
-                tmpMeal.setRecipe((Map<String, String>)docData.get("recipe"));
+                tmpMeal.setRecipe(docData.get("recipe").toString());
                 tmpMeal.setTags((List<String>)docData.get("tags"));
                 tmpMeal.setId(document.getId());
                 mealList.add(tmpMeal);

@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @author bhartlove
  */
       
-@CrossOrigin(origins = ["http://localhost:3000/", "https://meal-right.web.app/"])
+@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/api/v1")
 public class MealController {
@@ -34,6 +34,7 @@ public class MealController {
     
     @PostMapping("/meals")
     public Meal createMeal(@RequestBody Meal meal){
+        System.out.println("Creating a meal...");
         return mealService.createMeal(meal);
     }
     
