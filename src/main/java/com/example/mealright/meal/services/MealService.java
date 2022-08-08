@@ -17,4 +17,6 @@ public interface MealService {
     
     public List<Meal> getMeals();
     
+    public Meal getMeal(String id);
+    
 }

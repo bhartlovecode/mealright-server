@@ -21,7 +21,7 @@ public class MealEntity {
     private String name;
     private String description;
     private String recipe;
-    private double rating;
+    private long likes;
     private String poster;
     private List<String> tags;
 }

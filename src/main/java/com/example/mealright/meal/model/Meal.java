@@ -19,7 +19,7 @@ public class Meal {
     private String name;
     private String description;
     private String recipe;
-    private double rating;
+    private long likes;
     private String poster;
     private List<String> tags;
     
@@ -28,7 +28,7 @@ public class Meal {
         name = "";
         description = "";
         recipe = "";
-        rating = 0.0;
+        likes = 0;
         poster = "";
         tags.clear();
     }

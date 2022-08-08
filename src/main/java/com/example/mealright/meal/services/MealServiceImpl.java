@@ -14,6 +14,7 @@ import com.google.cloud.firestore.DocumentReference;
 import com.google.cloud.firestore.Firestore;
 import com.google.cloud.firestore.QueryDocumentSnapshot;
 import com.google.cloud.firestore.QuerySnapshot;
+import com.google.cloud.firestore.DocumentSnapshot;
 import com.google.cloud.firestore.WriteResult;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
@@ -45,13 +46,46 @@ public class MealServiceImpl implements MealService {
         data.put("name", mealEntity.getName());
         data.put("description", mealEntity.getDescription());
         data.put("poster", mealEntity.getPoster());
-        data.put("rating", mealEntity.getRating());
+        data.put("likes", mealEntity.getLikes());
         data.put("recipe", mealEntity.getRecipe());
         data.put("tags", mealEntity.getTags());
 
         ApiFuture<DocumentReference> result = db.collection("meals").add(data);
         
         return meal;
+    }
+    
+    @Override
+    public Meal getMeal(String id) {
+        Firestore db = DatabaseController.getInstance().db;
+        Meal retMeal = new Meal();
+        DocumentReference docRef = db.collection("meals").document(id.trim());
+        // asynchronously retrieve the document
+        ApiFuture<DocumentSnapshot> future = docRef.get();
+        // future.get() blocks on response
+        DocumentSnapshot document;
+        try {
+            document = future.get();
+            if(document.exists()){
+                Map docData = document.getData();
+                retMeal.setName(docData.get("name").toString());
+                retMeal.setDescription(docData.get("description").toString());
+                retMeal.setPoster(docData.get("poster").toString());
+                retMeal.setLikes((long)docData.get("likes"));
+                retMeal.setRecipe(docData.get("recipe").toString());
+                retMeal.setTags((List<String>)docData.get("tags"));
+                retMeal.setId(document.getId());
+                return retMeal;
+            }
+            
+            else{
+                System.out.println("Document does not exist");
+            }
+        } catch (InterruptedException | ExecutionException ex) {
+            Logger.getLogger(MealServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+         return null;
     }
     
     @Override
@@ -76,7 +110,7 @@ public class MealServiceImpl implements MealService {
                 tmpMeal.setName(docData.get("name").toString());
                 tmpMeal.setDescription(docData.get("description").toString());
                 tmpMeal.setPoster(docData.get("poster").toString());
-                tmpMeal.setRating((double)docData.get("rating"));
+                tmpMeal.setLikes((long)docData.get("likes"));
                 tmpMeal.setRecipe(docData.get("recipe").toString());
                 tmpMeal.setTags((List<String>)docData.get("tags"));
                 tmpMeal.setId(document.getId());
