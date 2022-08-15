@@ -19,4 +19,6 @@ public interface MealService {
     
     public Meal getMeal(String id);
     
+    public List<String> updateLikes(String id, String userId);
+    
 }

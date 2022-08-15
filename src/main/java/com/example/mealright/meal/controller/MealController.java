@@ -48,4 +48,9 @@ public class MealController {
     public Meal getMeal(@PathVariable String id){
         return mealService.getMeal(id);
     }
+    
+    @PostMapping("/meals/{id}/updateLikes")
+    public List<String> updateLikes(@PathVariable String id, @RequestBody String uid){
+        return mealService.updateLikes(id, uid);
+    }
 }

@@ -7,7 +7,6 @@ package com.example.mealright.meal.services;
 import com.example.mealright.MealRight.DatabaseController;
 import com.example.mealright.meal.entities.MealEntity;
 import com.example.mealright.meal.model.Meal;
-import static com.fasterxml.jackson.databind.jsonFormatVisitors.JsonValueFormat.UUID;
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.CollectionReference;
 import com.google.cloud.firestore.DocumentReference;
@@ -15,17 +14,18 @@ import com.google.cloud.firestore.Firestore;
 import com.google.cloud.firestore.QueryDocumentSnapshot;
 import com.google.cloud.firestore.QuerySnapshot;
 import com.google.cloud.firestore.DocumentSnapshot;
-import com.google.cloud.firestore.WriteResult;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
+import java.util.HashSet;
+import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.UUID;
 
 /**
  *
@@ -49,10 +49,54 @@ public class MealServiceImpl implements MealService {
         data.put("likes", mealEntity.getLikes());
         data.put("recipe", mealEntity.getRecipe());
         data.put("tags", mealEntity.getTags());
+        data.put("uid", mealEntity.getUid());
 
         ApiFuture<DocumentReference> result = db.collection("meals").add(data);
         
         return meal;
+    }
+    
+    @Override
+    public List<String> updateLikes(String id, String userId){
+        Firestore db = DatabaseController.getInstance().db;
+        DocumentReference docRef = db.collection("meals").document(id.trim());
+        // asynchronously retrieve the document
+        ApiFuture<DocumentSnapshot> future = docRef.get();
+        // future.get() blocks on response
+        DocumentSnapshot document;
+        List<String> likedBy;
+        try {
+            document = future.get();
+            if(document.exists()){
+                Map docData = document.getData();
+                likedBy = (List<String>)docData.get("likes");
+                boolean inList = false;
+                for (String user : likedBy) {
+                    if(user.equals(userId)){
+                        inList = true;
+                        break;
+                    }
+                }
+                if(inList){
+                    likedBy.remove(userId);
+                }
+                
+                else{
+                    likedBy.add(userId);
+                }
+                docRef.update("likes", likedBy);
+                return likedBy;
+            }
+            
+            else{
+                System.out.println("Document does not exist");
+            }
+        } catch (InterruptedException | ExecutionException ex) {
+            Logger.getLogger(MealServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+         return null;
+        
     }
     
     @Override
@@ -71,9 +115,10 @@ public class MealServiceImpl implements MealService {
                 retMeal.setName(docData.get("name").toString());
                 retMeal.setDescription(docData.get("description").toString());
                 retMeal.setPoster(docData.get("poster").toString());
-                retMeal.setLikes((long)docData.get("likes"));
+                retMeal.setLikes((List<String>)docData.get("likes"));
                 retMeal.setRecipe(docData.get("recipe").toString());
                 retMeal.setTags((List<String>)docData.get("tags"));
+                retMeal.setUid(docData.get("uid").toString());
                 retMeal.setId(document.getId());
                 return retMeal;
             }
@@ -110,10 +155,11 @@ public class MealServiceImpl implements MealService {
                 tmpMeal.setName(docData.get("name").toString());
                 tmpMeal.setDescription(docData.get("description").toString());
                 tmpMeal.setPoster(docData.get("poster").toString());
-                tmpMeal.setLikes((long)docData.get("likes"));
+                tmpMeal.setLikes((List<String>)docData.get("likes"));
                 tmpMeal.setRecipe(docData.get("recipe").toString());
                 tmpMeal.setTags((List<String>)docData.get("tags"));
                 tmpMeal.setId(document.getId());
+                tmpMeal.setUid(docData.get("uid").toString());
                 mealList.add(tmpMeal);
                 docData.clear();
             }
