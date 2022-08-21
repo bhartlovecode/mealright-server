@@ -35,7 +35,6 @@ public class MealController {
     
     @PostMapping("/meals")
     public Meal createMeal(@RequestBody Meal meal){
-        System.out.println("Creating a meal...");
         return mealService.createMeal(meal);
     }
     
@@ -51,6 +50,12 @@ public class MealController {
     
     @PostMapping("/meals/{id}/updateLikes")
     public List<String> updateLikes(@PathVariable String id, @RequestBody String uid){
+        uid = uid.substring(0, uid.length()-1);
         return mealService.updateLikes(id, uid);
+    }
+    
+    @PostMapping("/meals/{id}/updateMeal")
+    public Meal updateMeal(@RequestBody Meal meal, @PathVariable String id){
+        return mealService.updateMeal(meal, id);
     }
 }

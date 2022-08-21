@@ -14,6 +14,7 @@ import com.google.cloud.firestore.Firestore;
 import com.google.cloud.firestore.QueryDocumentSnapshot;
 import com.google.cloud.firestore.QuerySnapshot;
 import com.google.cloud.firestore.DocumentSnapshot;
+import com.google.cloud.firestore.WriteResult;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import java.util.Map;
@@ -51,7 +52,38 @@ public class MealServiceImpl implements MealService {
         data.put("tags", mealEntity.getTags());
         data.put("uid", mealEntity.getUid());
 
-        ApiFuture<DocumentReference> result = db.collection("meals").add(data);
+        try{
+             ApiFuture<DocumentReference> result = db.collection("meals").add(data);
+        } catch (Exception ex) {
+            Logger.getLogger(MealServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+        }
+       
+        
+        return meal;
+    }
+    
+    @Override
+    public Meal updateMeal(Meal meal, String id){
+        MealEntity mealEntity = new MealEntity();
+        BeanUtils.copyProperties(meal, mealEntity);
+        
+        Firestore db = DatabaseController.getInstance().db;
+        
+        Map<String, Object> data = new HashMap<>();
+        data.put("name", mealEntity.getName());
+        data.put("description", mealEntity.getDescription());
+        data.put("poster", mealEntity.getPoster());
+        data.put("likes", mealEntity.getLikes());
+        data.put("recipe", mealEntity.getRecipe());
+        data.put("tags", mealEntity.getTags());
+        data.put("uid", mealEntity.getUid());
+        
+        try{
+            ApiFuture<WriteResult> result = db.collection("meals").document(id).set(data);
+        } catch (Exception ex) {
+            Logger.getLogger(MealServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
         
         return meal;
     }

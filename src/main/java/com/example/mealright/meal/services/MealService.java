@@ -21,4 +21,6 @@ public interface MealService {
     
     public List<String> updateLikes(String id, String userId);
     
+    public Meal updateMeal(Meal meal, String id);
+    
 }
