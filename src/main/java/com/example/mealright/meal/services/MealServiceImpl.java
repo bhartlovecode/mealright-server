@@ -51,6 +51,7 @@ public class MealServiceImpl implements MealService {
         data.put("recipe", mealEntity.getRecipe());
         data.put("tags", mealEntity.getTags());
         data.put("uid", mealEntity.getUid());
+        data.put("photo", mealEntity.getPhoto());
 
         try{
              ApiFuture<DocumentReference> result = db.collection("meals").add(data);
@@ -77,6 +78,7 @@ public class MealServiceImpl implements MealService {
         data.put("recipe", mealEntity.getRecipe());
         data.put("tags", mealEntity.getTags());
         data.put("uid", mealEntity.getUid());
+        data.put("photo", mealEntity.getPhoto());
         
         try{
             ApiFuture<WriteResult> result = db.collection("meals").document(id).set(data);
@@ -86,6 +88,18 @@ public class MealServiceImpl implements MealService {
         
         
         return meal;
+    }
+    
+    @Override
+    public boolean deleteMeal(String id){
+        Firestore db = DatabaseController.getInstance().db;
+        try{
+            ApiFuture<WriteResult> writeResult = db.collection("meals").document(id).delete();
+            return true;
+        } catch (Exception ex){
+            Logger.getLogger(MealServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+            return false;
+        }
     }
     
     @Override
@@ -151,6 +165,7 @@ public class MealServiceImpl implements MealService {
                 retMeal.setRecipe(docData.get("recipe").toString());
                 retMeal.setTags((List<String>)docData.get("tags"));
                 retMeal.setUid(docData.get("uid").toString());
+                retMeal.setPhoto(docData.get("photo").toString());
                 retMeal.setId(document.getId());
                 return retMeal;
             }
@@ -192,6 +207,7 @@ public class MealServiceImpl implements MealService {
                 tmpMeal.setTags((List<String>)docData.get("tags"));
                 tmpMeal.setId(document.getId());
                 tmpMeal.setUid(docData.get("uid").toString());
+                tmpMeal.setPhoto(docData.get("photo").toString());
                 mealList.add(tmpMeal);
                 docData.clear();
             }

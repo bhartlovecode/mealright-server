@@ -23,6 +23,7 @@ public class Meal {
     private String poster;
     private List<String> tags;
     private String uid;
+    private String photo;
     
     public void reset(){
         id = "";
@@ -33,6 +34,7 @@ public class Meal {
         poster = "";
         tags.clear();
         uid = "";
+        photo = "";
     }
 
 }

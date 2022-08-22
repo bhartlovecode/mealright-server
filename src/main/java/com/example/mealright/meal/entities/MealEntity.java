@@ -25,4 +25,5 @@ public class MealEntity {
     private String poster;
     private List<String> tags;
     private String uid;
+    private String photo;
 }

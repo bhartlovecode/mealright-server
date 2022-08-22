@@ -23,4 +23,6 @@ public interface MealService {
     
     public Meal updateMeal(Meal meal, String id);
     
+    public boolean deleteMeal(String id);
+    
 }
